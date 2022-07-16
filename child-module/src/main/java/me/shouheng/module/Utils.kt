@@ -1,3 +1,13 @@
 package me.shouheng.module
 
-class Utils
+/** The utils. */
+object Utils {
+
+    private const val helloStatic = "Hello There"
+
+    /** Test keyword usage. */
+    fun testKeyword(): String {
+        println("Hello" + System.currentTimeMillis())
+        return helloStatic;
+    }
+}

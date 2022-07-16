@@ -1,4 +1,4 @@
-package me.shouheng.gradlecompact
+package me.shouheng.demo
 
 import org.junit.Test
 
