@@ -27,5 +27,9 @@ class LocatePlugin: Plugin<Project> {
                 }
             }
         }
+
+        // Register locate custom transform.
+        project.extensions.findByType(AppExtension::class.java)
+            ?.registerTransform(LocateTransform(project))
     }
 }
