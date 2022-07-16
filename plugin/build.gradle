@@ -20,8 +20,8 @@ dependencies {
 uploadArchives {
     repositories {
         mavenDeployer {
-            pom.groupId = 'me.shouheng.aplugin'
-            pom.artifactId = 'aplugin'
+            pom.groupId = 'me.shouheng.locate'
+            pom.artifactId = 'locate'
             pom.version = '1.0'
             repository(url: uri('../repo'))
         }
