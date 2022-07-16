@@ -1,3 +1,4 @@
+include ':child-module'
 include ':plugin'
 include ':app'
 rootProject.name = "GradleCompact"
