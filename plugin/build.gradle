@@ -30,6 +30,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation gradleApi()
     implementation localGroovy()
+
+    implementation "org.ow2.asm:asm:8.0.1"
+    implementation "org.ow2.asm:asm-util:8.0.1"
 }
 
 // 发布到本地仓库
