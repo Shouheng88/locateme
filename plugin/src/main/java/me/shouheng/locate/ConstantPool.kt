@@ -1,6 +1,8 @@
 package me.shouheng.locate
 
 import me.shouheng.locate.utils.Logger
+import me.shouheng.locate.utils.readInt
+import me.shouheng.locate.utils.readUnsignedShort
 import java.io.File
 import java.nio.charset.Charset
 
@@ -76,14 +78,14 @@ object ConstantPool {
     //
     private fun parseInternal(bytes: ByteArray): List<String> {
         val sequences = mutableMapOf<Int, String>()
-        val constantCount = bytes[8]*16*16 + bytes[9]
+        val constantCount = bytes.readUnsignedShort(8)
         var constantIndex = 1
         var index = 10
         val classNos = mutableListOf<Int>()
         while (constantIndex < constantCount) {
             when (val code = bytes[index].toInt()) {
                 CONSTANT_UTF8 -> {
-                    val length = readShort(bytes, index+1) // TODO unsigned
+                    val length = readShort(bytes, index+1)
                     val start = index + 3
                     val end = start + length
                     val sequence = String(bytes.slice(IntRange(start, end-1)).toByteArray()
@@ -216,17 +218,12 @@ object ConstantPool {
         return sequences.values.toList()
     }
 
-    private fun readShort(bytes: ByteArray, start: Int): Int =
-            bytes[start  ] * BYTE_UNIT + bytes[start+1]
+    private fun readShort(bytes: ByteArray, start: Int): Int = bytes.readUnsignedShort(start)
 
-    private fun readInt(bytes: ByteArray, start: Int): Int =
-            bytes[start  ] * BYTE_UNIT * BYTE_UNIT * BYTE_UNIT +
-            bytes[start+1] * BYTE_UNIT * BYTE_UNIT +
-            bytes[start+2] * BYTE_UNIT +
-            bytes[start+3]
+    private fun readInt(bytes: ByteArray, start: Int): Int = bytes.readInt(start)
 
     @JvmStatic fun main(args: Array<String>) {
-        val file = File("D:\\codes\\android\\locateme\\Main.class")
+        val file = File("D:\\codes\\android\\locateme\\Base64Test.class")
         println("${file.exists()}")
         parse(file.path).forEach {
             println(it)
