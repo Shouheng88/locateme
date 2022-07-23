@@ -35,7 +35,7 @@ dependencies {
     implementation "org.ow2.asm:asm-util:8.0.1"
 }
 
-// 发布到本地仓库
+// Upload to local repo.
 uploadArchives {
     repositories {
         mavenDeployer {

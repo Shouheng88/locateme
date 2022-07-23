@@ -1,4 +1,4 @@
-package me.shouheng.locate
+package me.shouheng.locate.utils
 
 import java.io.File
 
@@ -25,7 +25,7 @@ object FileUtils {
 
     /** Get file name from path. */
     fun getFileName(path: String): String {
-        if (path.isEmpty()) {
+        if (path.isBlank()) {
             return ""
         }
         val index = path.lastIndexOf(File.separatorChar)
@@ -36,7 +36,7 @@ object FileUtils {
 
     /** Get zip entry name. */
     fun getZipEntryName(name: String): String {
-        if (name.isEmpty()) {
+        if (name.isBlank()) {
             return ""
         }
         val index = name.lastIndexOf('/')
