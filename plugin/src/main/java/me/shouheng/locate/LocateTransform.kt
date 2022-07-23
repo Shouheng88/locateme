@@ -58,7 +58,7 @@ class LocateTransform(
             }
         }
         val engine = LocateEngine(searchKeywords, resources, sources)
-        engine.locate()
+        engine.start()
     }
 
     /** Search keyword by BFS. */

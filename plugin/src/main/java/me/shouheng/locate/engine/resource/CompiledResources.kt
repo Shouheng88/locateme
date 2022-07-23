@@ -5,7 +5,7 @@ import com.android.build.api.transform.JarInput
 
 /** Compiled resources. */
 class CompiledResources private constructor(
-    val resources: List<CompiledResource>
+    private val resources: List<CompiledResource>
 ) {
     companion object {
         /** Get compiled resources from jar inputs and directory inputs. */
