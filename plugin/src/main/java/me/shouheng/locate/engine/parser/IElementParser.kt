@@ -1,5 +1,7 @@
 package me.shouheng.locate.engine.parser
 
+import me.shouheng.locate.engine.parser.model.ClassInfo
+
 /** The class element parse interface. */
 interface IElementParser {
 

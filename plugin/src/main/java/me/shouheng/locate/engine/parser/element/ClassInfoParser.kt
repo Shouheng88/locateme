@@ -1,6 +1,6 @@
 package me.shouheng.locate.engine.parser.element
 
-import me.shouheng.locate.engine.parser.ClassInfo
+import me.shouheng.locate.engine.parser.model.ClassInfo
 import me.shouheng.locate.engine.parser.IElementParser
 import me.shouheng.locate.utils.readUnsignedShort
 

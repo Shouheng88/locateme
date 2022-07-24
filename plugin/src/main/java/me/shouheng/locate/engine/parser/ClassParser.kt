@@ -2,7 +2,9 @@ package me.shouheng.locate.engine.parser
 
 import me.shouheng.locate.engine.parser.element.ClassFiledParser
 import me.shouheng.locate.engine.parser.element.ClassInfoParser
+import me.shouheng.locate.engine.parser.element.ClassMethodParser
 import me.shouheng.locate.engine.parser.element.ConstantPoolParser
+import me.shouheng.locate.engine.parser.model.ClassInfo
 import me.shouheng.locate.utils.Logger
 import me.shouheng.locate.utils.readAll
 import java.io.File
@@ -36,7 +38,8 @@ class ClassParser: IClassParser {
     private val elementParsers = listOf(
         ConstantPoolParser(),
         ClassInfoParser(),
-        ClassFiledParser()
+        ClassFiledParser(),
+        ClassMethodParser()
     )
 
     override fun parseBasic(bytes: ByteArray): ClassInfo {

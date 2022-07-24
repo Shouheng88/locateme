@@ -40,8 +40,7 @@ class KeywordSearcher: IKeywordSearcher {
                 }?.let { basic ->
                     keywords.keywords.forEach { keyword ->
                         if (basic.containsKeyword(keyword)) {
-                            val methods = parser.parseMethods(bytes, basic)
-                            methods.findUsages(keyword)
+                            parser.parseMethods(bytes)
                         }
                     }
                 }

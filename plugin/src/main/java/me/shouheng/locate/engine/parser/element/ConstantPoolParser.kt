@@ -1,8 +1,8 @@
 package me.shouheng.locate.engine.parser.element
 
-import me.shouheng.locate.engine.parser.ClassInfo
+import me.shouheng.locate.engine.parser.model.ClassInfo
 import me.shouheng.locate.engine.parser.IElementParser
-import me.shouheng.locate.engine.parser.MethodInfo
+import me.shouheng.locate.engine.parser.model.MethodRefInfo
 import me.shouheng.locate.utils.readUnsignedShort
 import java.nio.charset.Charset
 
@@ -49,7 +49,7 @@ class ConstantPoolParser: IElementParser {
         // Current constant index
         var index = 1
         // Offset in bytes
-        val sequences = mutableMapOf<Int, String>()
+        val utf8s = mutableMapOf<Int, String>()
         val strings = mutableMapOf<Int, Int>()
         val classes = mutableMapOf<Int, Int>()
         val methodTypes = mutableMapOf<Int, Int>()
@@ -65,7 +65,7 @@ class ConstantPoolParser: IElementParser {
                         bytes.slice(IntRange(start, end-1)).toByteArray(),
                         Charset.forName("utf-8")
                     )
-                    sequences[index] = sequence
+                    utf8s[index] = sequence
                     offset += (CONSTANT_TAG_LENGTH + CONSTANT_UTF8_LENGTH + length)
                     index += 1
                 }
@@ -105,7 +105,7 @@ class ConstantPoolParser: IElementParser {
         }
 
         // Build constants.
-        buildConstant(info, sequences, strings, classes, methodTypes, nameAndTypes, methods)
+        buildConstant(info, utf8s, strings, classes, methodTypes, nameAndTypes, methods)
     }
 
     override fun ending(): Int = offset
@@ -113,32 +113,27 @@ class ConstantPoolParser: IElementParser {
     /** Build constant. */
     private fun buildConstant(
         info: ClassInfo,
-        sequences: Map<Int, String>,
+        utf8s: Map<Int, String>,
         strings: Map<Int, Int>,
         classes: Map<Int, Int>,
         methodTypes: Map<Int, Int>,
         nameAndTypes: Map<Int, Pair<Int, Int>>,
         methods: Map<Int, Pair<Int, Int>>
     ) {
-        val methodInfos = mutableListOf<MethodInfo>()
+        val methodInfos = mutableListOf<MethodRefInfo>()
         methods.values.forEach {
             val classIndex = classes[it.first]!!
             val nameAndType = nameAndTypes[it.second]!!
             val nameIndex = nameAndType.first
             val typeIndex =  nameAndType.second
-            methodInfos.add(
-                MethodInfo(
-                    sequences[classIndex]!!,
-                    sequences[nameIndex]!!,
-                    sequences[typeIndex]!!
-                )
-            )
+            methodInfos.add(MethodRefInfo(utf8s[classIndex]!!, utf8s[nameIndex]!!, utf8s[typeIndex]!!))
         }
-        info.methods.addAll(methodInfos)
-        info.strings.addAll(strings.values.map { sequences[it]!! })
+        info.methodRefs.addAll(methodInfos)
+        info.strings.addAll(strings.values.map { utf8s[it]!! })
         classes.forEach {
             val classIndex = it.value
-            info.classes[it.key] = sequences[classIndex]!!
+            info.classes[it.key] = utf8s[classIndex]!!
         }
+        info.utf8s.putAll(utf8s)
     }
 }
