@@ -3,6 +3,9 @@ package me.shouheng.locate.engine.parser
 /** The class element parse interface. */
 interface IElementParser {
 
+    /** Is basic info parser (class info and constant pool etc). */
+    fun isBasic(): Boolean
+
     /** Set start offset of the parser. */
     fun setStart(offset: Int)
 

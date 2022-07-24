@@ -11,5 +11,8 @@ interface IClassParser {
     fun parseBasic(bytes: ByteArray): ClassInfo
 
     /** Parse methods. */
-    fun parseMethods(bytes: ByteArray, info: ClassInfo): ClassMethods
+    fun parseMethods(bytes: ByteArray): ClassInfo
+
+    /** Reset state, call this method after parse job. */
+    fun release()
 }

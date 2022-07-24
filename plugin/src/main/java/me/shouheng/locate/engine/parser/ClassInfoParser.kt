@@ -9,6 +9,8 @@ class ClassInfoParser: IElementParser {
 
     private var interfacesCount: Int = 0
 
+    override fun isBasic(): Boolean = true
+
     override fun setStart(offset: Int) {
         this.offset = offset
     }

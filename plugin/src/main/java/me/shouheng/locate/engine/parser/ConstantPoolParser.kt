@@ -35,6 +35,8 @@ class ConstantPoolParser: IElementParser {
 
     private var offset: Int = FIRST_CONSTANT_INDEX
 
+    override fun isBasic(): Boolean = true
+
     override fun setStart(offset: Int) {
         // noop
     }
