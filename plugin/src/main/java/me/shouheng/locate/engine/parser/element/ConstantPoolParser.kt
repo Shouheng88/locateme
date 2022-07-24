@@ -1,5 +1,8 @@
-package me.shouheng.locate.engine.parser
+package me.shouheng.locate.engine.parser.element
 
+import me.shouheng.locate.engine.parser.ClassInfo
+import me.shouheng.locate.engine.parser.IElementParser
+import me.shouheng.locate.engine.parser.MethodInfo
 import me.shouheng.locate.utils.readUnsignedShort
 import java.nio.charset.Charset
 
@@ -123,7 +126,13 @@ class ConstantPoolParser: IElementParser {
             val nameAndType = nameAndTypes[it.second]!!
             val nameIndex = nameAndType.first
             val typeIndex =  nameAndType.second
-            methodInfos.add(MethodInfo(sequences[classIndex]!!, sequences[nameIndex]!!, sequences[typeIndex]!!))
+            methodInfos.add(
+                MethodInfo(
+                    sequences[classIndex]!!,
+                    sequences[nameIndex]!!,
+                    sequences[typeIndex]!!
+                )
+            )
         }
         info.methods.addAll(methodInfos)
         info.strings.addAll(strings.values.map { sequences[it]!! })

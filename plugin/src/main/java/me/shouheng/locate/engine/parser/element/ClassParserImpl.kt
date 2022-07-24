@@ -1,5 +1,9 @@
-package me.shouheng.locate.engine.parser
+package me.shouheng.locate.engine.parser.element
 
+import me.shouheng.locate.engine.parser.ClassInfo
+import me.shouheng.locate.engine.parser.ClassInfoParser
+import me.shouheng.locate.engine.parser.IClassParser
+import me.shouheng.locate.engine.parser.IElementParser
 import me.shouheng.locate.utils.Logger
 import me.shouheng.locate.utils.readAll
 import java.io.File
@@ -77,6 +81,7 @@ class ClassParserImpl: IClassParser {
             val bytes = file.readAll()
             val info = parser.parseBasic(bytes)
             parser.parseMethods(bytes)
+            parser.release()
             Logger.debug(info.toString())
         }
     }

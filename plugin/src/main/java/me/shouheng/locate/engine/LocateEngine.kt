@@ -4,7 +4,7 @@ import me.shouheng.locate.engine.filter.ResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeywords
 import me.shouheng.locate.engine.notify.EmailNotifier
 import me.shouheng.locate.engine.notify.ILocateNotifier
-import me.shouheng.locate.engine.parser.ClassParserImpl
+import me.shouheng.locate.engine.parser.element.ClassParserImpl
 import me.shouheng.locate.engine.parser.IClassParser
 import me.shouheng.locate.engine.resource.CompiledResources
 import me.shouheng.locate.engine.search.IKeywordSearcher

@@ -1,4 +1,4 @@
-package me.shouheng.locate.engine.parser
+package me.shouheng.locate.engine.parser.model
 
 import me.shouheng.locate.engine.keyword.SearchKeyword
 
