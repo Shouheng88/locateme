@@ -12,6 +12,12 @@ class ClassInfo {
     /** All strings of class. */
     val strings = mutableListOf<String>()
 
+    /** Referenced classes of current class, mapped from constant index to class string. */
+    val classes = mutableMapOf<Int, String>()
+
+    /** Full name of current class. */
+    var clazz: String? = null
+
     /** Is base info contains keyword. */
     fun containsKeyword(keyword: SearchKeyword): Boolean {
         return false
@@ -21,7 +27,7 @@ class ClassInfo {
     fun shouldIgnore(filters: List<ResourceFilter>): Boolean = false
 
     override fun toString(): String {
-        return "ClassInfo(methods=$methods, strings=$strings)"
+        return "ClassInfo(methods=$methods, strings=$strings, classes=$classes, clazz=$clazz)"
     }
 }
 

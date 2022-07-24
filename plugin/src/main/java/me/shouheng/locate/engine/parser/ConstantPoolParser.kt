@@ -125,5 +125,9 @@ class ConstantPoolParser: IElementParser {
         }
         info.methods.addAll(methodInfos)
         info.strings.addAll(strings.values.map { sequences[it]!! })
+        classes.forEach {
+            val classIndex = it.value
+            info.classes[it.key] = sequences[classIndex]!!
+        }
     }
 }
