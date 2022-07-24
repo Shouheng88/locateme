@@ -3,12 +3,12 @@ package me.shouheng.locate.engine.keyword
 /** Keyword usage. */
 class KeywordUsage(
     /** The keyword to search. */
-    keyword: String,
+    keyword: SearchKeyword,
     /** The root keyword. */
-    val root: String,
+    val root: SearchKeyword,
     /** Found keyword usages. */
     usages: List<KeywordUsage> = mutableListOf()
-): SearchKeyword(keyword, 0, usages) {
+): SearchKeyword(keyword.keyword, 0, usages) {
 
     /** Total visit count. */
     var visit: Int = 0

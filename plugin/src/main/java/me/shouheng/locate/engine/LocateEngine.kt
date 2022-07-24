@@ -37,20 +37,21 @@ class LocateEngine(
 
     /** Do locate. */
     fun start() {
+        resources.doFilter(filters)
         searcher.doSearch(keywords, resources, parser, filters)
         locate.doLocate()
         notifier.doNotify()
     }
 
     /** Register compiled resource filter. */
-    fun registerResourceFilter(filter: ResourceFilter) {
+    fun addFilter(filter: ResourceFilter) {
         if (!filters.contains(filter)) {
             filters.add(filter)
         }
     }
 
     /** Remove compiled resource filter. */
-    fun removeResourceFilter(filter: ResourceFilter) {
+    fun removeFilter(filter: ResourceFilter) {
         filters.remove(filter)
     }
 }

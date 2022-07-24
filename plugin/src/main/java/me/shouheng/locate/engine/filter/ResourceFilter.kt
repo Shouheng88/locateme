@@ -1,5 +1,7 @@
 package me.shouheng.locate.engine.filter
 
+import me.shouheng.locate.engine.resource.CompiledResource
+
 /** The compiled resource filter. */
 interface ResourceFilter {
 
@@ -11,16 +13,9 @@ interface ResourceFilter {
     fun filterClass(): Boolean
 
     /**
-     * Filter directory compiled resources.
+     * Filter compiled resource.
      *
      * @return true if should ignore given resource.
      */
-    fun filterDirectory(): Boolean
-
-    /**
-     * Filter jar compiled resource.
-     *
-     * @return true if should ignore given resource.
-     */
-    fun filterJar(): Boolean
+    fun filter(resource: CompiledResource): Boolean
 }
