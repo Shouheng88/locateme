@@ -1,4 +1,4 @@
-package me.shouheng.locate.engine.parser
+package me.shouheng.locate.engine.parser.element
 
 import me.shouheng.locate.engine.parser.ClassInfo
 import me.shouheng.locate.engine.parser.IElementParser

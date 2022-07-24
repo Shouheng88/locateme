@@ -1,16 +1,15 @@
-package me.shouheng.locate.engine.parser.element
+package me.shouheng.locate.engine.parser
 
-import me.shouheng.locate.engine.parser.ClassInfo
-import me.shouheng.locate.engine.parser.ClassInfoParser
-import me.shouheng.locate.engine.parser.IClassParser
-import me.shouheng.locate.engine.parser.IElementParser
+import me.shouheng.locate.engine.parser.element.ClassFiledParser
+import me.shouheng.locate.engine.parser.element.ClassInfoParser
+import me.shouheng.locate.engine.parser.element.ConstantPoolParser
 import me.shouheng.locate.utils.Logger
 import me.shouheng.locate.utils.readAll
 import java.io.File
 import java.lang.IllegalStateException
 
 /** Default class parser implementation. */
-class ClassParserImpl: IClassParser {
+class ClassParser: IClassParser {
 
     // ClassFile {
     //    u4             magic;
@@ -36,7 +35,8 @@ class ClassParserImpl: IClassParser {
     /** Class element parsers. */
     private val elementParsers = listOf(
         ConstantPoolParser(),
-        ClassInfoParser()
+        ClassInfoParser(),
+        ClassFiledParser()
     )
 
     override fun parseBasic(bytes: ByteArray): ClassInfo {
@@ -77,7 +77,7 @@ class ClassParserImpl: IClassParser {
         @JvmStatic fun main(args: Array<String>) {
             val file = File("D:\\codes\\android\\locateme\\Base64Test.class")
             Logger.debug("${file.exists()}")
-            val parser = ClassParserImpl()
+            val parser = ClassParser()
             val bytes = file.readAll()
             val info = parser.parseBasic(bytes)
             parser.parseMethods(bytes)
