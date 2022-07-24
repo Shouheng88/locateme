@@ -7,21 +7,26 @@ import java.io.File
 /** Default class parser implementation. */
 class ClassParserImpl: IClassParser {
 
-    private val constantPoolParser = ConstantPoolParser()
+    /** Class element parsers. */
+    private val elementParsers = listOf(
+        ConstantPoolParser()
+    )
 
     override fun parseBasic(bytes: ByteArray): ClassInfo {
         val info = ClassInfo()
-        parseConstantPool(bytes, info)
+        val it = elementParsers.iterator()
+        var last: IElementParser? = null
+        while (it.hasNext()) {
+            val parser = it.next()
+            parser.setStart(last?.ending()?:0)
+            parser.parse(bytes, info)
+            last = parser
+        }
         return info
     }
 
     override fun parseMethods(bytes: ByteArray, info: ClassInfo): ClassMethods {
         return ClassMethods()
-    }
-
-    /** Parse constant pool. */
-    private fun parseConstantPool(bytes: ByteArray, info: ClassInfo) {
-        constantPoolParser.parse(bytes, info)
     }
 
     companion object {

@@ -33,12 +33,17 @@ class ConstantPoolParser: IElementParser {
         private const val CONSTANT_UTF8_LENGTH         = 2
     }
 
+    private var offset: Int = FIRST_CONSTANT_INDEX
+
+    override fun setStart(offset: Int) {
+        // noop
+    }
+
     override fun parse(bytes: ByteArray, info: ClassInfo) {
         val count = bytes.readUnsignedShort(CONSTANT_COUNT_INDEX)
         // Current constant index
         var index = 1
         // Offset in bytes
-        var offset = FIRST_CONSTANT_INDEX
         val sequences = mutableMapOf<Int, String>()
         val strings = mutableMapOf<Int, Int>()
         val classes = mutableMapOf<Int, Int>()
@@ -97,6 +102,8 @@ class ConstantPoolParser: IElementParser {
         // Build constants.
         buildConstant(info, sequences, strings, classes, methodTypes, nameAndTypes, methods)
     }
+
+    override fun ending(): Int = offset
 
     /** Build constant. */
     private fun buildConstant(
