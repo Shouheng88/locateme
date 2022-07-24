@@ -2,10 +2,7 @@ package me.shouheng.locate.engine.resource
 
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.JarInput
-import me.shouheng.locate.utils.Logger
-import me.shouheng.locate.utils.isClass
-import me.shouheng.locate.utils.isRFile
-import me.shouheng.locate.utils.isZipEntryRFile
+import me.shouheng.locate.utils.*
 import java.io.File
 import java.util.zip.ZipInputStream
 
@@ -31,7 +28,7 @@ class CompiledResource private constructor(
         while (files.isNotEmpty()) {
             val file = files.removeAt(0)
             if (file.isFile && file.isClass() && !file.isRFile()) {
-                callback.invoke(file.inputStream().readBytes())
+                callback.invoke(file.readAll())
             } else if (file.isDirectory) {
                 file.listFiles()?.toList()?.let { children ->
                     files.addAll(children)
@@ -47,7 +44,7 @@ class CompiledResource private constructor(
         var entry = zis.nextEntry
         while (entry != null) {
             if (!entry.isDirectory && entry.name.isClass() && !entry.name.isZipEntryRFile()) {
-                callback.invoke(zis.readBytes())
+                callback.invoke(zis.readAll())
             }
             entry = zis.nextEntry
         }

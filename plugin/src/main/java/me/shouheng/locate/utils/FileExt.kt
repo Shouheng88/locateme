@@ -25,3 +25,6 @@ fun String.zipEntryFileName(): String {
     val index = this.lastIndexOf('/')
     return if (index >= 0) this.substring(index+1) else this
 }
+
+/** Read all bytes of file. */
+fun File?.readAll() = this?.inputStream()?.readAll()?:ByteArray(0)

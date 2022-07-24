@@ -8,8 +8,8 @@ interface IClassParser {
      *  do method and code parse later, otherwise, methods and byte
      *  code won't be parsed.
      */
-    fun parseBasic(bytes: ByteArray): ClassBasicInfo
+    fun parseBasic(bytes: ByteArray): ClassInfo
 
     /** Parse methods. */
-    fun parseMethods(bytes: ByteArray, info: ClassBasicInfo): ClassMethods
+    fun parseMethods(bytes: ByteArray, info: ClassInfo): ClassMethods
 }

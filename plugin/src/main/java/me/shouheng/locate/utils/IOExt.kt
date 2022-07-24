@@ -8,7 +8,7 @@ import java.io.InputStream
 private const val sBufferSize = 8192
 
 /** Read all bytes from input stream.  */
-fun <T : InputStream> T?.readBytes(): ByteArray {
+fun <T : InputStream> T?.readAll(): ByteArray {
     if (this == null) return ByteArray(0)
     var os: ByteArrayOutputStream? = null
     return try {
