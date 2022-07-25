@@ -18,6 +18,8 @@ class ClassMethodParser: IElementParser {
 
     private var offset: Int = 0
 
+    private val codeParser = ByteCodeParser()
+
     override fun isBasic(): Boolean = false
 
     override fun setStart(offset: Int) {
@@ -43,6 +45,7 @@ class ClassMethodParser: IElementParser {
             val nameIndex = bytes.readUnsignedShort(offset)
             val name = info.utf8s[nameIndex]!!
             offset += 2 // name_index (u2)
+            Logger.debug("Parsing method [${info.clazz}][$name]")
 
             val descriptorIndex = bytes.readUnsignedShort(offset)
             val descriptor = info.utf8s[descriptorIndex]!!
@@ -63,27 +66,10 @@ class ClassMethodParser: IElementParser {
                 val attributeLength = bytes.readInt(offset)
                 offset += 4 // attribute_length (u4)
 
+                // Parse "Code" attribute.
                 if (ATTRIBUTES_CODE == attrName) {
-                    // Code_attribute {
-                    //    u2 attribute_name_index;
-                    //    u4 attribute_length;
-                    //    u2 max_stack;
-                    //    u2 max_locals;
-                    //    u4 code_length;
-                    //    u1 code[code_length];
-                    //    u2 exception_table_length;
-                    //    {   u2 start_pc;
-                    //        u2 end_pc;
-                    //        u2 handler_pc;
-                    //        u2 catch_type;
-                    //    } exception_table[exception_table_length];
-                    //    u2 attributes_count;
-                    //    attribute_info attributes[attributes_count];
-                    //}
-                    val codeLengthIndex = offset + 4 // max_stack (u2) + max_locals (u2)
-                    var codeLength = bytes.readInt(codeLengthIndex)
-                    while (codeLength-- > 0) {
-                    }
+                    codeParser.setStart(offset)
+                    codeParser.parse(bytes, info)
                 }
 
                 offset += attributeLength

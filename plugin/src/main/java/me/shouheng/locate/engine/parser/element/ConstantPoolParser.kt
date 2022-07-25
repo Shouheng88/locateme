@@ -120,15 +120,13 @@ class ConstantPoolParser: IElementParser {
         nameAndTypes: Map<Int, Pair<Int, Int>>,
         methods: Map<Int, Pair<Int, Int>>
     ) {
-        val methodInfos = mutableListOf<MethodRefInfo>()
-        methods.values.forEach {
-            val classIndex = classes[it.first]!!
-            val nameAndType = nameAndTypes[it.second]!!
+        methods.entries.forEach {
+            val classIndex = classes[it.value.first]!!
+            val nameAndType = nameAndTypes[it.value.second]!!
             val nameIndex = nameAndType.first
             val typeIndex =  nameAndType.second
-            methodInfos.add(MethodRefInfo(utf8s[classIndex]!!, utf8s[nameIndex]!!, utf8s[typeIndex]!!))
+            info.methodRefs[it.key] = MethodRefInfo(utf8s[classIndex]!!, utf8s[nameIndex]!!, utf8s[typeIndex]!!)
         }
-        info.methodRefs.addAll(methodInfos)
         info.strings.addAll(strings.values.map { utf8s[it]!! })
         classes.forEach {
             val classIndex = it.value

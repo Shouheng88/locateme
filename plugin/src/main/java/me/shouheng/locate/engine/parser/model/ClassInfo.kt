@@ -17,7 +17,7 @@ class ClassInfo {
     /////////////////////////////////////////////////////////////
 
     /** All referenced methods of current class. */
-    val methodRefs = mutableListOf<MethodRefInfo>()
+    val methodRefs = mutableMapOf<Int, MethodRefInfo>()
 
     /** All referenced strings of current class. */
     val strings = mutableListOf<String>()
