@@ -122,8 +122,12 @@ class ByteCodeParser {
                 }
                 SIPUSH, LDC_W, LDC2_W, GETSTATIC, PUTSTATIC, GETFIELD, PUTFIELD,
                 INVOKEVIRTUAL, INVOKESPECIAL, INVOKESTATIC, NEW, ANEWARRAY, CHECKCAST, INSTANCEOF, IINC -> {
-                    val methodIndex = bytes.readUnsignedShort(offset+1)
-                    info.methodRefs[methodIndex]?.let { method -> methods.add(method) }
+                    val methodIndex = bytes.readUnsignedShort(offset + 1)
+                    info.methodRefs[methodIndex]?.let { method ->
+                        val methodRef = method.clone()
+                        methodRef.codeNumber = bytecodeOffset
+                        methods.add(methodRef)
+                    }
                     offset += 3
                 }
                 INVOKEINTERFACE, INVOKEDYNAMIC -> {
@@ -135,10 +139,76 @@ class ByteCodeParser {
                 else -> throw IllegalArgumentException()
             }
         }
+
+        // Read the 'exception_table_length' and 'exception_table' field to create a label for each
+        // referenced instruction, and to make methodVisitor visit the corresponding try catch blocks.
+        var exceptionTableLength = bytes.readUnsignedShort(offset)
+        offset += 2
+        while (exceptionTableLength-- > 0) {
+            offset += 8
+        }
+
+        val lineNumbers = mutableListOf<LineNumber>()
+        var attributesCount = bytes.readUnsignedShort(offset)
+        offset += 2 // attributes_count (u2)
+        while (attributesCount-- > 0) {
+            val attrNameIndex = bytes.readUnsignedShort(offset)
+            val attrName = info.utf8s[attrNameIndex]!!
+            offset += 2 // attribute_name_index (u2)
+            val attributeLength = bytes.readInt(offset)
+            offset += 4 // attribute_length (u4)
+
+            if (ATTRIBUTES_LINE_NUMBER == attrName) {
+                var lineNumberOffset = offset
+                var lineNumberTableLength = bytes.readUnsignedShort(lineNumberOffset)
+                lineNumberOffset += 2
+                var lastLineNumber: LineNumber? = null
+                while (lineNumberTableLength-- > 0) {
+                    val startPc = bytes.readUnsignedShort(lineNumberOffset)
+                    val lineNumber = bytes.readUnsignedShort(lineNumberOffset + 2)
+                    lastLineNumber?.end = startPc - 1
+                    lastLineNumber = LineNumber(startPc, lineNumber)
+                    lineNumbers.add(lastLineNumber)
+                    Logger.debug("LineNumber start_pc[$startPc] lineNumber[$lineNumber]")
+                    lineNumberOffset += 4
+                }
+            }
+
+            offset += attributeLength
+        }
+
+        methods.forEach { method ->
+            lineNumbers.firstOrNull { lineNumber ->
+                lineNumber.inRegion(method.codeNumber!!)
+            }?.let { lineNumber ->
+                method.lineNumber = lineNumber.line
+            }?:Logger.error("Line number not found for method ref [$method]")
+        }
+
         return methods
     }
 
+    /** Code line number wrapper class. */
+    private inner class LineNumber(
+        /** Start of code number. */
+        val start: Int,
+        /** Line number in source code. */
+        val line: Int,
+        /** End of code number. */
+        var end: Int = Int.MAX_VALUE
+    ) {
+
+        /** Is given position in region [start, end]. */
+        fun inRegion(position: Int) = position in start..end
+
+        override fun toString(): String {
+            return "LineNumber(start=$start, line=$line, end=$end)"
+        }
+    }
+
     private companion object {
+        private const val ATTRIBUTES_LINE_NUMBER = "LineNumberTable"
+
         // The JVM opcode values (with the MethodVisitor method name used to visit them in comment, and
         // where '-' means 'same method name as on the previous line').
         // See https,//docs.oracle.com/javase/specs/jvms/se9/html/jvms-6.html.
