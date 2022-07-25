@@ -54,6 +54,8 @@ class ClassMethodParser: IElementParser {
             var attributesCount = bytes.readUnsignedShort(offset)
             offset += 2 // attributes_count (u2)
 
+            val method = ClassMethod(isPrivate, name, descriptor)
+
             // attribute_info {
             //    u2 attribute_name_index;
             //    u4 attribute_length;
@@ -69,13 +71,14 @@ class ClassMethodParser: IElementParser {
                 // Parse "Code" attribute.
                 if (ATTRIBUTES_CODE == attrName) {
                     codeParser.setStart(offset)
-                    codeParser.parse(bytes, info)
+                    val methodRefs = codeParser.parse(bytes, info)
+                    method.methodRefs.addAll(methodRefs)
                 }
 
                 offset += attributeLength
             }
 
-            info.methods.add(ClassMethod(isPrivate, name, descriptor))
+            info.methods.add(method)
         }
     }
 

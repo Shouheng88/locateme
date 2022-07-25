@@ -8,4 +8,7 @@ data class MethodRefInfo(
     val name: String,
     /** Type: parameter and return type. */
     val type: String
-)
+) {
+    /** Called at line ... */
+    var lineNumber: Int? = null
+}

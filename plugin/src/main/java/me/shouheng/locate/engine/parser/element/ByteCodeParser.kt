@@ -1,20 +1,18 @@
 package me.shouheng.locate.engine.parser.element
 
-import me.shouheng.locate.engine.parser.IElementParser
 import me.shouheng.locate.engine.parser.model.ClassInfo
+import me.shouheng.locate.engine.parser.model.MethodRefInfo
 import me.shouheng.locate.utils.Logger
 import me.shouheng.locate.utils.readInt
 import me.shouheng.locate.utils.readUnsignedShort
 
 /** Byte code parser. */
-class ByteCodeParser: IElementParser {
+class ByteCodeParser {
 
     private var offset: Int = 0
     private var codeLength: Int = 0
 
-    override fun isBasic(): Boolean = false
-
-    override fun setStart(offset: Int) {
+    fun setStart(offset: Int) {
         this.offset = offset
     }
 
@@ -34,10 +32,8 @@ class ByteCodeParser: IElementParser {
     //    u2 attributes_count;
     //    attribute_info attributes[attributes_count];
     //}
-    override fun parse(bytes: ByteArray, info: ClassInfo) {
-        val maxStack = bytes.readUnsignedShort(offset)
-        val maxLocals = bytes.readUnsignedShort(offset + 2)
-        Logger.debug("maxStack: [$maxStack], maxLocals: [$maxLocals]")
+    fun parse(bytes: ByteArray, info: ClassInfo): List<MethodRefInfo> {
+        val methods = mutableListOf<MethodRefInfo>()
         offset += 4 // max_stack (u2) + max_locals (u2)
         codeLength = bytes.readInt(offset)
         offset += 4 // code_length (u4)
@@ -127,7 +123,7 @@ class ByteCodeParser: IElementParser {
                 SIPUSH, LDC_W, LDC2_W, GETSTATIC, PUTSTATIC, GETFIELD, PUTFIELD,
                 INVOKEVIRTUAL, INVOKESPECIAL, INVOKESTATIC, NEW, ANEWARRAY, CHECKCAST, INSTANCEOF, IINC -> {
                     val methodIndex = bytes.readUnsignedShort(offset+1)
-                    Logger.debug("Invoke [${info.methodRefs[methodIndex]}]")
+                    info.methodRefs[methodIndex]?.let { method -> methods.add(method) }
                     offset += 3
                 }
                 INVOKEINTERFACE, INVOKEDYNAMIC -> {
@@ -139,10 +135,9 @@ class ByteCodeParser: IElementParser {
                 else -> throw IllegalArgumentException()
             }
         }
+        return methods
     }
 
-    override fun ending(): Int = offset
-    
     private companion object {
         // The JVM opcode values (with the MethodVisitor method name used to visit them in comment, and
         // where '-' means 'same method name as on the previous line').
