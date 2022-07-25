@@ -3,6 +3,7 @@ package me.shouheng.locate.engine.parser.element
 import me.shouheng.locate.engine.parser.IElementParser
 import me.shouheng.locate.engine.parser.model.ClassInfo
 import me.shouheng.locate.engine.parser.model.ClassMethod
+import me.shouheng.locate.utils.Logger
 import me.shouheng.locate.utils.readInt
 import me.shouheng.locate.utils.readUnsignedShort
 
@@ -41,7 +42,12 @@ class ClassMethodParser: IElementParser {
 
             val nameIndex = bytes.readUnsignedShort(offset)
             val name = info.utf8s[nameIndex]!!
-            offset += 4 // name_index (u2) + descriptor_index (u2)
+            offset += 2 // name_index (u2)
+
+            val descriptorIndex = bytes.readUnsignedShort(offset)
+            val descriptor = info.utf8s[descriptorIndex]!!
+            offset += 2 // descriptor_index (u2)
+
             var attributesCount = bytes.readUnsignedShort(offset)
             offset += 2 // attributes_count (u2)
 
@@ -83,7 +89,7 @@ class ClassMethodParser: IElementParser {
                 offset += attributeLength
             }
 
-            info.methods.add(ClassMethod(isPrivate, name))
+            info.methods.add(ClassMethod(isPrivate, name, descriptor))
         }
     }
 
