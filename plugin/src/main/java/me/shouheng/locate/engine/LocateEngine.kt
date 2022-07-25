@@ -2,7 +2,7 @@ package me.shouheng.locate.engine
 
 import me.shouheng.locate.engine.filter.ResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeywords
-import me.shouheng.locate.engine.notify.EmailNotifier
+import me.shouheng.locate.engine.notify.ConsoleNotifier
 import me.shouheng.locate.engine.notify.ILocateNotifier
 import me.shouheng.locate.engine.parser.ClassParser
 import me.shouheng.locate.engine.parser.IClassParser
@@ -33,7 +33,7 @@ class LocateEngine(
     private val locate: ISourceLocate = SourceLocate(keywords, sourceCode)
 
     /** The notifier for result. */
-    private val notifier: ILocateNotifier = EmailNotifier(keywords)
+    private val notifier: ILocateNotifier = ConsoleNotifier(keywords)
 
     /** Do locate. */
     fun start() {
