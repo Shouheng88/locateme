@@ -45,11 +45,11 @@ class ClassMethodParser: IElementParser {
             val nameIndex = bytes.readUnsignedShort(offset)
             val name = info.utf8s[nameIndex]!!
             offset += 2 // name_index (u2)
-            Logger.debug("Parsing method [${info.clazz}][$name]")
 
             val descriptorIndex = bytes.readUnsignedShort(offset)
             val descriptor = info.utf8s[descriptorIndex]!!
             offset += 2 // descriptor_index (u2)
+            Logger.debug("Parsing method [${info.clazz}][$name][$descriptor]")
 
             var attributesCount = bytes.readUnsignedShort(offset)
             offset += 2 // attributes_count (u2)

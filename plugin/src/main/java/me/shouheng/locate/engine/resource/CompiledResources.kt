@@ -2,7 +2,7 @@ package me.shouheng.locate.engine.resource
 
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.JarInput
-import me.shouheng.locate.engine.filter.ResourceFilter
+import me.shouheng.locate.engine.filter.IResourceFilter
 
 /** Compiled resources. */
 class CompiledResources private constructor(
@@ -13,7 +13,7 @@ class CompiledResources private constructor(
     private val filtered = mutableListOf<CompiledResource>()
 
     /** Do filter for input resources. */
-    fun doFilter(filters: List<ResourceFilter>) {
+    fun doFilter(filters: List<IResourceFilter>) {
         resources.forEach { resource ->
             if (filters.none { it.filter(resource) }) {
                 filtered.add(resource)

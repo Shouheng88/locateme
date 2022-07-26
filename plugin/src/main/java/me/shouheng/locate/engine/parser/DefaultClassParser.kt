@@ -5,13 +5,14 @@ import me.shouheng.locate.engine.parser.element.ClassInfoParser
 import me.shouheng.locate.engine.parser.element.ClassMethodParser
 import me.shouheng.locate.engine.parser.element.ConstantPoolParser
 import me.shouheng.locate.engine.parser.model.ClassInfo
+import me.shouheng.locate.engine.resource.CompiledResource
 import me.shouheng.locate.utils.Logger
 import me.shouheng.locate.utils.readAll
 import java.io.File
 import java.lang.IllegalStateException
 
 /** Default class parser implementation. */
-class ClassParser: IClassParser {
+class DefaultClassParser: IClassParser {
 
     // ClassFile {
     //    u4             magic;
@@ -72,20 +73,31 @@ class ClassParser: IClassParser {
         return info!!
     }
 
-    override fun release() {
-        info = null
-    }
-
     companion object {
         @JvmStatic fun main(args: Array<String>) {
+            parseSingleJar()
+        }
+
+        /** Parse single class test. */
+        private fun parseSingleClass() {
             val file = File("D:\\codes\\android\\locateme\\Base64Test.class")
             Logger.debug("${file.exists()}")
-            val parser = ClassParser()
+            val parser = DefaultClassParser()
             val bytes = file.readAll()
             val info = parser.parseBasic(bytes)
             parser.parseMethods(bytes)
-            parser.release()
             Logger.debug(info.toString())
+        }
+
+        /** Parse single jar test. */
+        private fun parseSingleJar() {
+            CompiledResource.from(File("C:\\Users\\Admin\\.gradle\\caches\\transforms-2\\files-2.1\\" +
+                "01932eee3ce130a32420722a9158fccd\\jetified-core-ktx-1.2.0-runtime.jar"), true).travel { bytes ->
+                val parser = DefaultClassParser()
+                parser.parseBasic(bytes).let {
+                    parser.parseMethods(bytes)
+                }
+            }
         }
     }
 }

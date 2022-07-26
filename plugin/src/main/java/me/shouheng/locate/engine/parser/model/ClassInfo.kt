@@ -1,6 +1,6 @@
 package me.shouheng.locate.engine.parser.model
 
-import me.shouheng.locate.engine.filter.ResourceFilter
+import me.shouheng.locate.engine.filter.IResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeyword
 
 /** Class information. */
@@ -34,7 +34,7 @@ class ClassInfo {
     }
 
     /** Should ignore given class. */
-    fun shouldIgnore(filters: List<ResourceFilter>): Boolean = false
+    fun shouldIgnore(filters: List<IResourceFilter>): Boolean = false
 
     override fun toString(): String {
         return "ClassInfo(utf8s=$utf8s, classes=$classes, methodRefs=$methodRefs, strings=$strings, clazz=$clazz, methods=$methods)"

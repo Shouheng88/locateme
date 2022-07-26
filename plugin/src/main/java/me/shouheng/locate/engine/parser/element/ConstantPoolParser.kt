@@ -1,7 +1,7 @@
 package me.shouheng.locate.engine.parser.element
 
-import me.shouheng.locate.engine.parser.model.ClassInfo
 import me.shouheng.locate.engine.parser.IElementParser
+import me.shouheng.locate.engine.parser.model.ClassInfo
 import me.shouheng.locate.engine.parser.model.MethodRefInfo
 import me.shouheng.locate.utils.readUnsignedShort
 import java.nio.charset.Charset
@@ -72,7 +72,7 @@ class ConstantPoolParser: IElementParser {
                 CONSTANT_LONG, CONSTANT_DOUBLE -> {
                     // Special guideline for double and long type, see,
                     // https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4.5
-                    offset += (CONSTANT_TAG_LENGTH + CONSTANTS_LENGTHS[code]!!)
+                    offset += (CONSTANT_TAG_LENGTH + getConstantLength(code))
                     index += 2
                 }
                 else -> {
@@ -98,7 +98,7 @@ class ConstantPoolParser: IElementParser {
                             methodTypes[index] = bytes.readUnsignedShort(CONSTANT_TAG_LENGTH + offset)
                         }
                     }
-                    offset += (CONSTANT_TAG_LENGTH + CONSTANTS_LENGTHS[code]!!)
+                    offset += (CONSTANT_TAG_LENGTH + getConstantLength(code))
                     index += 1
                 }
             }
@@ -106,6 +106,14 @@ class ConstantPoolParser: IElementParser {
 
         // Build constants.
         buildConstant(info, utf8s, strings, classes, methodTypes, nameAndTypes, methods)
+    }
+
+    /** Get constant length. */
+    private fun getConstantLength(code: Int): Int {
+        if (CONSTANTS_LENGTHS.containsKey(code)) {
+            return CONSTANTS_LENGTHS[code]!!
+        }
+        throw IllegalStateException("Constant code [$code] not found in constant lengths.")
     }
 
     override fun ending(): Int = offset

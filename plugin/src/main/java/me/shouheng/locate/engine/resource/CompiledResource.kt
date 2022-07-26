@@ -8,7 +8,7 @@ import java.util.zip.ZipInputStream
 
 /** Compiled resource wrapper. */
 class CompiledResource private constructor(
-    private val file: File,
+    val file: File,
     private val isJar: Boolean
 ) {
 
@@ -44,13 +44,22 @@ class CompiledResource private constructor(
         var entry = zis.nextEntry
         while (entry != null) {
             if (!entry.isDirectory && entry.name.isClass() && !entry.name.isZipEntryRFile()) {
-                callback.invoke(zis.readAll())
+                callback.invoke(zis.readAll(false))
             }
             entry = zis.nextEntry
         }
     }
 
+    override fun toString(): String {
+        return "CompiledResource(file=$file, isJar=$isJar)"
+    }
+
     companion object {
+
+        /** Get compiled resource from file and jar type. */
+        fun from(file: File, isJar: Boolean): CompiledResource {
+            return CompiledResource(file, isJar)
+        }
 
         /** Get compiled resource from jar input. */
         fun from(jarInput: JarInput): CompiledResource {

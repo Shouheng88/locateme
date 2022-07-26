@@ -1,11 +1,9 @@
 package me.shouheng.locate.engine
 
-import me.shouheng.locate.engine.filter.ResourceFilter
+import me.shouheng.locate.engine.filter.IResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeywords
 import me.shouheng.locate.engine.notify.ConsoleNotifier
 import me.shouheng.locate.engine.notify.ILocateNotifier
-import me.shouheng.locate.engine.parser.ClassParser
-import me.shouheng.locate.engine.parser.IClassParser
 import me.shouheng.locate.engine.resource.CompiledResources
 import me.shouheng.locate.engine.search.IKeywordSearcher
 import me.shouheng.locate.engine.search.KeywordSearcher
@@ -20,14 +18,11 @@ class LocateEngine(
     private val sourceCode: CodeSources
 ) {
 
-    /** Class parser. */
-    private val parser: IClassParser = ClassParser()
-
     /** The searcher. */
     private val searcher: IKeywordSearcher = KeywordSearcher()
 
     /** Compiled resource filters. */
-    private val filters = mutableListOf<ResourceFilter>()
+    private val filters = mutableListOf<IResourceFilter>()
 
     /** Used to locate result in source code. */
     private val locate: ISourceLocate = SourceLocate(keywords, sourceCode)
@@ -38,20 +33,20 @@ class LocateEngine(
     /** Do locate. */
     fun start() {
         resources.doFilter(filters)
-        searcher.doSearch(keywords, resources, parser, filters)
+        searcher.doSearch(keywords, resources, filters)
         locate.doLocate()
         notifier.doNotify()
     }
 
     /** Register compiled resource filter. */
-    fun addFilter(filter: ResourceFilter) {
+    fun addFilter(filter: IResourceFilter) {
         if (!filters.contains(filter)) {
             filters.add(filter)
         }
     }
 
     /** Remove compiled resource filter. */
-    fun removeFilter(filter: ResourceFilter) {
+    fun removeFilter(filter: IResourceFilter) {
         filters.remove(filter)
     }
 }

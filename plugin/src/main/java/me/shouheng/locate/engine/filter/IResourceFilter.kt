@@ -3,7 +3,7 @@ package me.shouheng.locate.engine.filter
 import me.shouheng.locate.engine.resource.CompiledResource
 
 /** The compiled resource filter. */
-interface ResourceFilter {
+interface IResourceFilter {
 
     /**
      * Filter class compiled resource.

@@ -3,6 +3,7 @@ package me.shouheng.locate
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import me.shouheng.locate.engine.LocateEngine
+import me.shouheng.locate.engine.filter.DefaultResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeyword
 import me.shouheng.locate.engine.keyword.SearchKeywords
 import me.shouheng.locate.engine.resource.CompiledResources
@@ -55,6 +56,7 @@ class LocateTransform(
             }
         }
         val engine = LocateEngine(searchKeywords, resources, sources)
+        engine.addFilter(DefaultResourceFilter())
         engine.start()
     }
 }

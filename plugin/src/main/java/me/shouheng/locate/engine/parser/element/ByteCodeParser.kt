@@ -182,7 +182,7 @@ class ByteCodeParser {
                 lineNumber.inRegion(method.codeNumber!!)
             }?.let { lineNumber ->
                 method.lineNumber = lineNumber.line
-            }?:Logger.error("Line number not found for method ref [$method]")
+            }?:Logger.error("Line number not found for method ref [$method], lines [${lineNumbers}] .")
         }
 
         return methods
