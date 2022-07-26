@@ -17,7 +17,15 @@ class KeywordSearchJob(
 
     override fun startJob() {
         resources.forEach { resource ->
-            resource.travel { bytes ->
+            resource.travel { entry, bytes ->
+                // Currently, only handle jar. If its package is not included
+                // in the packages configured, ignore it!
+                if (resource.isJar) {
+                    val pkg = resource.getPackage(entry)
+                    if (filters.any { filter -> filter.ignoreClass(pkg) }) {
+                        return@travel
+                    }
+                }
                 try {
                     doTravel(bytes)
                 } catch (e: Exception) {
@@ -36,10 +44,11 @@ class KeywordSearchJob(
             if (ignore) {
                 Logger.debug("Class ignored [$basic]")
             }
-            ignore
+            !ignore
         }?.let { basic ->
             keywords.keywords.forEach { keyword ->
                 if (basic.containsKeyword(keyword)) {
+                    Logger.debug("Found keyword [${keyword.keyword}] under [${basic.clazz}]")
                     parser.parseMethods(bytes)
                 }
             }

@@ -37,7 +37,7 @@ android {
 }
 
 locateMe {
-    keywords = ["hello", "debug"]
+    keywords = ["Hello", "debug"]
     traceback 2
 }
 

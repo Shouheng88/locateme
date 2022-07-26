@@ -6,4 +6,6 @@ open class LocateExtension {
     var keywords = emptyList<String>()
     /** Traceback count. */
     var traceback: Int = 0
+    /** Packages to scan. */
+    var packages = emptyList<String>()
 }

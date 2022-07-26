@@ -58,7 +58,7 @@ class LocateTransform(
             }
         }
         val engine = LocateEngine(searchKeywords, resources, sources)
-        engine.addFilter(DefaultResourceFilter())
+        engine.addFilter(DefaultResourceFilter(extension?.packages?: emptyList()))
         engine.start()
     }
 }

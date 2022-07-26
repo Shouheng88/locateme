@@ -8,14 +8,16 @@ interface IResourceFilter {
     /**
      * Filter class compiled resource.
      *
+     * @param path full class path
      * @return true if should ignore given resource.
      */
-    fun filterClass(): Boolean
+    fun ignoreClass(path: String): Boolean
 
     /**
      * Filter compiled resource.
      *
+     * @param resource compiled resource
      * @return true if should ignore given resource.
      */
-    fun filter(resource: CompiledResource): Boolean
+    fun ignoreResource(resource: CompiledResource): Boolean
 }

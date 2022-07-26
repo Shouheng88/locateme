@@ -8,6 +8,8 @@ class ClassInfo {
 
     ///////////////////////////////////////////////////////////// ORIGIN CONSTANTS
 
+    private var utf8Set: MutableSet<String>? = null
+
     /** Origin utf-8 constants, mapped from constant index to utf-8. */
     val utf8s = mutableMapOf<Int, String>()
 
@@ -30,11 +32,18 @@ class ClassInfo {
 
     /** Is base info contains keyword. */
     fun containsKeyword(keyword: SearchKeyword): Boolean {
-        return false
+        if (utf8Set == null) {
+            utf8Set = mutableSetOf<String>().apply {
+                this.addAll(utf8s.values)
+            }
+        }
+        return utf8Set?.contains(keyword.keyword) == true
     }
 
     /** Should ignore given class. */
-    fun shouldIgnore(filters: List<IResourceFilter>): Boolean = false
+    fun shouldIgnore(filters: List<IResourceFilter>): Boolean {
+        return filters.any { filter -> filter.ignoreClass(clazz ?: "") }
+    }
 
     override fun toString(): String {
         return "ClassInfo(utf8s=$utf8s, classes=$classes, methodRefs=$methodRefs, strings=$strings, clazz=$clazz, methods=$methods)"

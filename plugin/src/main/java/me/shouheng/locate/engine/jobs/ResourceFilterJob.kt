@@ -15,7 +15,7 @@ class ResourceFilterJob(
         val it = resources.iterator()
         while (it.hasNext()) {
             val resource = it.next()
-            if (filters.any { it.filter(resource) }) {
+            if (filters.any { it.ignoreResource(resource) }) {
                 Logger.info("Resource ignored [$resource]")
                 it.remove()
             }

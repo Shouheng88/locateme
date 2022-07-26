@@ -75,7 +75,8 @@ class DefaultClassParser: IClassParser {
 
     companion object {
         @JvmStatic fun main(args: Array<String>) {
-            parseSingleJar()
+//            parseSingleJar()
+            parseDirectory()
         }
 
         /** Parse single class test. */
@@ -91,8 +92,22 @@ class DefaultClassParser: IClassParser {
 
         /** Parse single jar test. */
         private fun parseSingleJar() {
-            CompiledResource.from(File("C:\\Users\\Admin\\.gradle\\caches\\transforms-2\\files-2.1\\" +
-                "01932eee3ce130a32420722a9158fccd\\jetified-core-ktx-1.2.0-runtime.jar"), true).travel { bytes ->
+            val resource = CompiledResource.from(File("C:\\Users\\Admin\\.gradle\\caches\\transforms-2\\files-2.1\\" +
+                "01932eee3ce130a32420722a9158fccd\\jetified-core-ktx-1.2.0-runtime.jar"), true)
+            resource.travel { entry, bytes ->
+                Logger.debug("Package: [${resource.getPackage(entry)}]")
+                val parser = DefaultClassParser()
+                parser.parseBasic(bytes).let {
+                    parser.parseMethods(bytes)
+                }
+            }
+        }
+
+        private fun parseDirectory() {
+            val resource = CompiledResource.from(File("D:\\codes\\android\\locateme\\app" +
+                "\\build\\intermediates\\javac\\debug\\classes"), false)
+            resource.travel { entry, bytes ->
+                Logger.debug("Package: [${resource.getPackage(entry)}]")
                 val parser = DefaultClassParser()
                 parser.parseBasic(bytes).let {
                     parser.parseMethods(bytes)

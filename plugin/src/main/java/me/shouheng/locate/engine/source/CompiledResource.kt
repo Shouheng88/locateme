@@ -9,11 +9,11 @@ import java.util.zip.ZipInputStream
 /** Compiled resource wrapper. */
 class CompiledResource private constructor(
     val file: File,
-    private val isJar: Boolean
+    val isJar: Boolean
 ) {
 
     /** Read resources. */
-    fun travel(callback: (ByteArray) -> Unit) {
+    fun travel(callback: (String, ByteArray) -> Unit) {
         if (isJar) {
             travelJar(file, callback)
         } else {
@@ -21,14 +21,24 @@ class CompiledResource private constructor(
         }
     }
 
+    /** Get package name of entry. */
+    fun getPackage(entryName: String): String {
+        val relativePath = if (isJar) entryName else entryName.replace(file.path, "")
+        val index = relativePath.lastIndexOf('/')
+        if (index > 0) {
+            return relativePath.substring(0, index).replace('/', '.')
+        }
+        return ""
+    }
+
     /** Travel under directory input. */
-    private fun travelDirectory(root: File, callback: (ByteArray) -> Unit) {
+    private fun travelDirectory(root: File, callback: (String, ByteArray) -> Unit) {
         Logger.info("traveling root directory [$root]")
         val files = mutableListOf(root)
         while (files.isNotEmpty()) {
             val file = files.removeAt(0)
             if (file.isFile && file.isClass() && !file.isRFile()) {
-                callback.invoke(file.readAll())
+                callback.invoke(file.path, file.readAll())
             } else if (file.isDirectory) {
                 file.listFiles()?.toList()?.let { children ->
                     files.addAll(children)
@@ -38,13 +48,13 @@ class CompiledResource private constructor(
     }
 
     /** Travel under jar input. */
-    private fun travelJar(zipFile: File, callback: (ByteArray) -> Unit) {
+    private fun travelJar(zipFile: File, callback: (String, ByteArray) -> Unit) {
         Logger.info("traveling jar file [$zipFile]")
         val zis = ZipInputStream(zipFile.inputStream())
         var entry = zis.nextEntry
         while (entry != null) {
             if (!entry.isDirectory && entry.name.isClass() && !entry.name.isZipEntryRFile()) {
-                callback.invoke(zis.readAll(false))
+                callback.invoke(entry.name, zis.readAll(false))
             }
             entry = zis.nextEntry
         }
