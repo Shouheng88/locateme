@@ -2,40 +2,36 @@ package me.shouheng.locate.engine
 
 import me.shouheng.locate.engine.filter.IResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeywords
-import me.shouheng.locate.engine.notify.ConsoleNotifier
-import me.shouheng.locate.engine.notify.ILocateNotifier
-import me.shouheng.locate.engine.resource.CompiledResources
-import me.shouheng.locate.engine.search.IKeywordSearcher
-import me.shouheng.locate.engine.search.KeywordSearcher
+import me.shouheng.locate.engine.jobs.ConsoleNotifyJob
+import me.shouheng.locate.engine.source.CompiledResource
+import me.shouheng.locate.engine.jobs.KeywordSearchJob
+import me.shouheng.locate.engine.jobs.ResourcesFilterJob
 import me.shouheng.locate.engine.source.CodeSources
-import me.shouheng.locate.engine.source.ISourceLocate
-import me.shouheng.locate.engine.source.SourceLocate
+import me.shouheng.locate.engine.jobs.SourceLocate
 
 /** Locate Me engine. */
 class LocateEngine(
-    private val keywords: SearchKeywords,
-    private val resources: CompiledResources,
-    private val sourceCode: CodeSources
+    keywords: SearchKeywords,
+    resources: MutableList<CompiledResource>,
+    sourceCode: CodeSources
 ) {
-
-    /** The searcher. */
-    private val searcher: IKeywordSearcher = KeywordSearcher()
 
     /** Compiled resource filters. */
     private val filters = mutableListOf<IResourceFilter>()
 
-    /** Used to locate result in source code. */
-    private val locate: ISourceLocate = SourceLocate(keywords, sourceCode)
-
-    /** The notifier for result. */
-    private val notifier: ILocateNotifier = ConsoleNotifier(keywords)
+    /** Engine jobs. */
+    private val engineJobs = listOf(
+        ResourcesFilterJob(resources, filters),
+        KeywordSearchJob(keywords, resources, filters),
+        SourceLocate(keywords, sourceCode),
+        ConsoleNotifyJob(keywords)
+    )
 
     /** Do locate. */
     fun start() {
-        resources.doFilter(filters)
-        searcher.doSearch(keywords, resources, filters)
-        locate.doLocate()
-        notifier.doNotify()
+        engineJobs.forEach {
+            it.startJob()
+        }
     }
 
     /** Register compiled resource filter. */

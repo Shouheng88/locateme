@@ -1,33 +1,22 @@
-package me.shouheng.locate.engine.search
+package me.shouheng.locate.engine.jobs
 
+import me.shouheng.locate.engine.IEngineJob
 import me.shouheng.locate.engine.filter.IResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeywords
 import me.shouheng.locate.engine.parser.DefaultClassParser
 import me.shouheng.locate.engine.parser.IClassParser
-import me.shouheng.locate.engine.resource.CompiledResources
+import me.shouheng.locate.engine.source.CompiledResource
 import me.shouheng.locate.utils.Logger
 
 /** Keyword searcher. */
-class KeywordSearcher: IKeywordSearcher {
+class KeywordSearchJob(
+    private val keywords: SearchKeywords,
+    private val resources: List<CompiledResource>,
+    private val filters: List<IResourceFilter>
+): IEngineJob {
 
-    private lateinit var keywords: SearchKeywords
-    private lateinit var resources: CompiledResources
-    private lateinit var filters: List<IResourceFilter>
-
-    override fun doSearch(
-        keywords: SearchKeywords,
-        resources: CompiledResources,
-        filters: List<IResourceFilter>
-    ) {
-        this.keywords = keywords
-        this.resources = resources
-        this.filters = filters
-        search()
-    }
-
-    /** Do search business. */
-    private fun search() {
-        resources.getResources().forEach { resource ->
+    override fun startJob() {
+        resources.forEach { resource ->
             resource.travel { bytes ->
                 try {
                     doTravel(bytes)

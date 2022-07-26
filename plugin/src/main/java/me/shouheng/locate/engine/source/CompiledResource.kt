@@ -1,4 +1,4 @@
-package me.shouheng.locate.engine.resource
+package me.shouheng.locate.engine.source
 
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.JarInput

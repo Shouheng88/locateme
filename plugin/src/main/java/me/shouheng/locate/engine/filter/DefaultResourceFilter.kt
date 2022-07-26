@@ -1,6 +1,6 @@
 package me.shouheng.locate.engine.filter
 
-import me.shouheng.locate.engine.resource.CompiledResource
+import me.shouheng.locate.engine.source.CompiledResource
 import me.shouheng.locate.utils.Logger
 
 /** Default implementation for resource filter. */

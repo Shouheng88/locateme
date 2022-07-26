@@ -6,7 +6,7 @@ import me.shouheng.locate.engine.LocateEngine
 import me.shouheng.locate.engine.filter.DefaultResourceFilter
 import me.shouheng.locate.engine.keyword.SearchKeyword
 import me.shouheng.locate.engine.keyword.SearchKeywords
-import me.shouheng.locate.engine.resource.CompiledResources
+import me.shouheng.locate.engine.source.CompiledResource
 import me.shouheng.locate.engine.source.CodeSources
 import me.shouheng.locate.utils.Logger
 import me.shouheng.locate.utils.isBlank
@@ -44,7 +44,9 @@ class LocateTransform(
             directoryInputs.addAll(input.directoryInputs)
             jarInputs.addAll(input.jarInputs)
         }
-        val resources = CompiledResources.from(jarInputs, directoryInputs)
+        val resources = mutableListOf<CompiledResource>()
+        resources.addAll(jarInputs.map { CompiledResource.from(it) })
+        resources.addAll(directoryInputs.map { CompiledResource.from(it) })
         val keywords = mutableListOf<SearchKeyword>()
         val searchKeywords = SearchKeywords(keywords)
         val extension = project.extensions.findByType(LocateExtension::class.java)
