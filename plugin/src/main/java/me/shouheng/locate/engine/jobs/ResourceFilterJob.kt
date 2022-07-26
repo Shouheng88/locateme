@@ -6,7 +6,7 @@ import me.shouheng.locate.engine.source.CompiledResource
 import me.shouheng.locate.utils.Logger
 
 /** Compiled resources. */
-class ResourcesFilterJob(
+class ResourceFilterJob(
     private val resources: MutableList<CompiledResource>,
     private val filters: List<IResourceFilter>
 ): IEngineJob {

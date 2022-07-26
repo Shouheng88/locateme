@@ -5,9 +5,9 @@ import me.shouheng.locate.engine.keyword.SearchKeywords
 import me.shouheng.locate.engine.jobs.ConsoleNotifyJob
 import me.shouheng.locate.engine.source.CompiledResource
 import me.shouheng.locate.engine.jobs.KeywordSearchJob
-import me.shouheng.locate.engine.jobs.ResourcesFilterJob
+import me.shouheng.locate.engine.jobs.ResourceFilterJob
 import me.shouheng.locate.engine.source.CodeSources
-import me.shouheng.locate.engine.jobs.SourceLocate
+import me.shouheng.locate.engine.jobs.SourceLocateJob
 
 /** Locate Me engine. */
 class LocateEngine(
@@ -21,9 +21,9 @@ class LocateEngine(
 
     /** Engine jobs. */
     private val engineJobs = listOf(
-        ResourcesFilterJob(resources, filters),
+        ResourceFilterJob(resources, filters),
         KeywordSearchJob(keywords, resources, filters),
-        SourceLocate(keywords, sourceCode),
+        SourceLocateJob(keywords, sourceCode),
         ConsoleNotifyJob(keywords)
     )
 

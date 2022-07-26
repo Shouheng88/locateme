@@ -5,7 +5,7 @@ import me.shouheng.locate.engine.keyword.SearchKeywords
 import me.shouheng.locate.engine.source.CodeSources
 
 /** Source locate implementation. */
-class SourceLocate(
+class SourceLocateJob(
     val keywords: SearchKeywords,
     val sourceCode: CodeSources
 ): IEngineJob {
